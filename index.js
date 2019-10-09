@@ -1,18 +1,48 @@
 const readline = require('readline');
-const rl = readline.createInterface(process.stdin, process.stdout);
-
-function ask(questionText) {
-  return new Promise((resolve, reject) => {
-    rl.question(questionText, resolve);
-  });
+const rl = readline.createInterface(process.stdin, process.stdout); function ask(questionText) {
+    return new Promise((resolve, reject) => {
+        rl.question(questionText, resolve);
+    });
 }
-
+function randomInteger(min, max) {
+    let range = max - min + 1;
+    return min + Math.floor(Math.random() * range);
+}
 start();
-
-async function start() {
-  console.log("Let's play a game where you (human) make up a number and I (computer) try to guess it.")
-  let secretNumber = await ask("What is your secret number?\nI won't peek, I promise...\n");
-  console.log('You entered: ' + secretNumber);
-  // Now try and complete the program.
-  process.exit();
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
 }
+async function start() {
+    console.log("Let's play a game where you (human) make up a number between 1 and 100 and I (computer) try to guess it.")
+    let secretNumber = await ask("What is your secret number?\nI won't peek, I promise...\n");
+    console.log('You entered: ' + secretNumber);
+    userResponse = secretNumber
+    let guess = getRandomInt(100)
+    userResponse = await ask("Is " + guess + " your number? ")
+    let maxNumber = 100
+    let minNumber = 1
+    while (guess !== secretNumber) {
+        if (guess > secretNumber) {
+            console.log("Guess Lower.")
+            maxNumber = guess
+            guess = randomInteger(maxNumber, minNumber)
+            userResponse = await ask("Is " + guess + " your number?")
+        } else if (guess < secretNumber) {
+            console.log("Guess Higher.")
+            minNumber = guess
+            guess = randomInteger(maxNumber, minNumber)
+            userResponse = await ask("Is " + guess + " your number?")
+        } else if (userResponse === 'Y' || userResponse === 'y') {
+            console.log("Hooray!")
+            break
+
+        }
+    }
+    process.exit()
+}
+
+
+
+
+
+
